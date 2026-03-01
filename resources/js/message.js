@@ -110,12 +110,29 @@ window.Echo.private("message." + authId)
 window.Echo.join("online")
     .here((users) => {
         console.log("Online users:", users);
+        users.forEach((user) => {
+            let element = $(`.contact[data-id="${user.id}"]`);
+            if (element.length > 0) {
+                element.find(".contact-status").removeClass("offline");
+                element.find(".contact-status").addClass("online");
+            }else{
+                element.find(".contact-status").removeClass("online");
+                element.find(".contact-status").addClass("offline");
+            }
+        });
     })
     .joining((user) => {
         console.log("User joined:", user);
+
+            let element = $(`.contact[data-id="${user.id}"]`);
+            element.find(".contact-status").removeClass("offline");
+            element.find(".contact-status").addClass("online");
     })
     .leaving((user) => {
         console.log("User left:", user);
+        let element = $(`.contact[data-id="${user.id}"]`);
+        element.find(".contact-status").removeClass("online");
+        element.find(".contact-status").addClass("offline");
     })
     .error((error) => {
         console.error("Error in Echo:", error);
