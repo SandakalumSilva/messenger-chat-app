@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendMessageEvent;
 use App\Models\Message as ModelsMessage;
 use App\Models\User;
 use App\Models\Message;
@@ -19,8 +20,18 @@ class ChatController extends Controller
     public function fetchMessages(Request $request)
     {
         $contact = User::findOrFail($request->contact_id);
+        $messages = Message::where(function ($query) use ($contact) {
+            $query->where('from_id', Auth::id())
+                ->where('to_id', $contact->id);
+        })
+            ->orWhere(function ($query) use ($contact) {
+                $query->where('from_id', $contact->id)
+                    ->where('to_id', Auth::id());
+            })
+            ->get();
         return response()->json([
             'contact' => $contact,
+            'messages' => $messages,
         ]);
     }
 
@@ -36,6 +47,8 @@ class ChatController extends Controller
             'to_id' => $request->contact_id,
             'message' => $request->message,
         ]);
+
+        event(new SendMessageEvent($message->message, Auth::user()->id,$request->contact_id));
 
         return response()->json([
             'message' => $message,

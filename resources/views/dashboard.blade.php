@@ -2,6 +2,9 @@
     <div id="frame">
         @include('layouts.sidebar')
         <div class="content">
+            <div class="blank-wrap">
+                <div class="inner-blank-wrap">Select a conversation to start chatting</div>
+            </div>
             <div class="loader d-none">
                 <div class="loader-inner">
                     <l-line-spinner size="40" stroke="3" speed="1" color="black"></l-line-spinner>
@@ -16,15 +19,15 @@
             </div>
             <div class="messages">
                 <ul>
-                    <x-message class="sent" :text="'Hello'" />
-                    <x-message class="replies" :text="'Hello There.'" />
+                    {{-- messages will be appended here by JavaScript --}}
                 </ul>
             </div>
             <div class="message-input">
                 <form action="" method="post" class="message-form">
                     @csrf
                     <div class="wrap">
-                        <input autocomplete="off" type="text" name="message" class="message-box" placeholder="Write your message..." />
+                        <input autocomplete="off" type="text" name="message" class="message-box"
+                            placeholder="Write your message..." />
                         <button type="submit" class="submit"><i class="fa fa-paper-plane"
                                 aria-hidden="true"></i></button>
                     </div>
